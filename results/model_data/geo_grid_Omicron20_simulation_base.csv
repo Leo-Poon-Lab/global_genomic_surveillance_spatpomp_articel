@@ -1,0 +1,30 @@
+name,code,code_country,code_iso_3166_2,col,row
+Argentina,ARG,032,ISO 3166-2:AR,2,12
+Australia,AUS,036,ISO 3166-2:AU,12,15
+Brazil,BRA,076,ISO 3166-2:BR,3,10
+Canada,CAN,124,ISO 3166-2:CA,1,1
+Chile,CHL,152,ISO 3166-2:CL,2,11
+France,FRA,250,ISO 3166-2:FR,5,5
+Germany,DEU,276,ISO 3166-2:DE,7,4
+India,IND,356,ISO 3166-2:IN,11,8
+Japan,JPN,392,ISO 3166-2:JP,15,6
+South Korea,KOR,410,ISO 3166-2:KR,13,7
+Mexico,MEX,484,ISO 3166-2:MX,1,3
+Morocco,MAR,504,ISO 3166-2:MA,5,10
+New Zealand,NZL,554,ISO 3166-2:NZ,14,17
+Nigeria,NGA,566,ISO 3166-2:NG,6,13
+Papua New Guinea,PNG,598,ISO 3166-2:PG,13,14
+South Africa,ZAF,710,ISO 3166-2:ZA,8,16
+Spain,ESP,724,ISO 3166-2:ES,5,6
+Tunisia,TUN,788,ISO 3166-2:TN,7,10
+Turkey,TUR,792,ISO 3166-2:TR,9,7
+United Arab Emirates,ARE,784,ISO 3166-2:AE,10,9
+Great Britain and Northern Ireland,GBR,826,ISO 3166-2:GB,4,4
+United States of America,USA,840,ISO 3166-2:US,1,2
+HKG,HKG,NA,NA,16,18
+AF_others,AF_others,NA,NA,16,19
+AS_others,AS_others,NA,NA,17,19
+EU_others,EU_others,NA,NA,18,19
+NA_others,NA_others,NA,NA,19,19
+OC_others,OC_others,NA,NA,20,19
+SA_others,SA_others,NA,NA,21,19

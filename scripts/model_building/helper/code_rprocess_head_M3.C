@@ -1,0 +1,17 @@
+double infection_detection_new_u=0;
+double detection_sequencing_new_u=0;
+double C_k_i_infected_u=0;
+double C_k_c_infected_u=0;
+double C_k_i_detected_u=0;
+double C_k_c_detected_u=0;
+double C_k_i_sequenced_u=0;
+double C_k_c_sequenced_u=0;
+double C_k_all_detected_u=0;
+double C_k_all_sequenced_u=0;
+double num_C_k_i_propensity_u=0;
+double num_C_k_c_propensity_u=0;
+int is_sequencing_propensity_u=0;
+double new_IDR_i_u=0;
+double new_IDR_c_u=0;
+double new_DSR_i_u=0;
+double new_DSR_c_u=0;

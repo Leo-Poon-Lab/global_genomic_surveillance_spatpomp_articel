@@ -1,0 +1,60 @@
+/data/testing_data/*
+# /results/model_data/model_simulation/*
+# /results/*
+/Reference/*
+*.key
+Notes.md
+.vscode
+# /draft/*
+/meetings/*
+/docs/Notes.md
+/data/covid19-flight_data/*
+flightlist_*.csv.gz
+*.tar.xz
+*.txt.xz
+data_download_file_reference*.csv
+.Rproj.user
+.DS_Store
+.RData
+.Rhistory
+global_genomic_surveillance_spatpomp.Rproj
+results/model_data/profile_Omicron20_low.rds
+results/model_data/profile_eta_one_low.rds
+~$*
+scripts/model_fitting/profile_test1.RData
+results/model_data/profiling/profile_eta_two_low.rds
+results/model_data/model_sims_*
+*.err
+*.out
+local_ibpf.rds
+local_ibpf_self_*.rds
+local_ibpf_amd_*.rds
+local_ibpf_intel_*.rds
+local_ibpf_condo_amd_*.rds
+local_ibpf_hugemem_*.rds
+local_iubf.rds
+local_iubf_self_*.rds
+local_iubf_amd_*.rds
+local_iubf_intel_*.rds
+local_iubf_condo_amd_*.rds
+local_iubf_hugemem_*.rds
+tmp
+tmp_dir/*.jpg
+tmp_dir/*.pdf
+tmp_dir/*
+benchmark.RData
+results/model_data/model_simulation/M3/Spatpomp_*
+results/model_data/model_simulation/M4/Spatpomp_*
+list_p_fig_4efg.rds
+list_p_fig_4abcd.rds
+model_sims.rds
+fig_3a_source.xlsx
+fig_3b_source.xlsx
+fig_3c_source.xlsx
+fig_3d_source.xlsx
+df_EDT_fig_4bcd.rds
+<<<<<<< HEAD
+df_origin_accession_id_all.csv
+=======
+draft/comments_coauthors/*
+>>>>>>> 0d2fade7 (update draft)

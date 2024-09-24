@@ -1,0 +1,3 @@
+parval_1,parval_2,case_type,lag_median,lag_mean,value_median,value_mean
+0.01,Max,Community,15,14.075578556781565,1.2017,2.0334
+0.01,Max,Imported,35,34.51742993848257,1.18,1.2521
