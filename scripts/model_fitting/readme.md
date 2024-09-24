@@ -1,0 +1,2 @@
+- Modeling fitting scripts for the *burn-in* and the formal fitting of models $M_0$ and $M_1$ are available in the folder [`profiling_HKU`](model_fitting/profiling_HKU/). 
+- Specification and fitting of the model $M_2$ are available in the script [`benchmark.R`](model_fitting/benchmark.R).
