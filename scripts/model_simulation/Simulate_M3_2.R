@@ -2,7 +2,7 @@
 
 ## Run on HPC
 setwd(here::here())
-path_mle <- "results/model_data/profiling_HKU/Omicron20/profiling_unit_11/mlev2_high_mod.rds"
+path_mle <- "results/model_data/profiling_HKU/Omicron20/profiling_shared_11/mlev1_high.rds"
 params_mle <- readRDS(path_mle)
 
 simulation_replicates <- 512
@@ -20,7 +20,7 @@ if (length(args)!=2) {
   stopifnot(!is.na(n_cores))
   stopifnot(n_cores > 0)
 }
-# input_rds <- "results/model_data/model_simulation/M3/df_all_values_M3_1.rds"
+# input_rds <- "results/model_data/model_simulation/M3/df_all_values_M3_49.rds"
 # n_cores <- 64
 
 suppressPackageStartupMessages(library(tidyverse))
@@ -61,9 +61,10 @@ print(date())
 registerDoParallel(n_cores)
 
 foreach(i = 1:nrow(df_all_values)) %dopar% {
+  # i=1
   change_IDR_i <- unlist(df_all_values$change_IDR[i])
   change_DSR_i <- unlist(df_all_values$change_DSR[i])
-  sequencing_propensity_i <- unlist(df_all_values$sequencing_propensity[i])
+  traveler_weight_i <- unlist(df_all_values$traveler_weight[i])
   model_name_i <- paste0("M3_", df_all_values$scenario[i])
 
   model_out_file_i <- paste0(dir_model_data, "Spatpomp_", model_name_i, ".rds")
@@ -92,7 +93,7 @@ foreach(i = 1:nrow(df_all_values)) %dopar% {
         for_IBPF = FALSE,
         change_IDR = change_IDR_i,
         change_DSR = change_DSR_i,
-        sequencing_propensity = sequencing_propensity_i
+        traveler_weight = traveler_weight_i
       )
     ))
 
@@ -117,7 +118,7 @@ set.seed(NULL)
 for(i in sample(1:nrow(df_all_values))){
   change_IDR_i <- unlist(df_all_values$change_IDR[i])
   change_DSR_i <- unlist(df_all_values$change_DSR[i])
-  sequencing_propensity_i <- unlist(df_all_values$sequencing_propensity[i])
+  traveler_weight_i <- unlist(df_all_values$traveler_weight[i])
   model_name_i <- paste0("M3_", df_all_values$scenario[i])
 
   model_out_file_i <- paste0(dir_model_data, "Spatpomp_", model_name_i, ".rds")

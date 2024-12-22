@@ -11,7 +11,7 @@ if (length(args)!=2) {
   model_name <- args[2]
 }
 # input_dir <- "results/model_data/profiling_HKU/Omicron20/profiling_all_1"
-# input_dir <- "results/model_data/profiling_HKU/Omicron20/profiling_unit_11/"
+# input_dir <- "results/model_data/profiling_HKU/Omicron20/profiling_shared_10/"
 # output_dir <- input_dir
 
 check_mle_in_CI <- TRUE # in the latter part of the fitting, we switch this to TRUE

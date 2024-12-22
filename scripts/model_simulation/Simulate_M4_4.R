@@ -18,34 +18,43 @@ if(!file.exists(data_fitting_rds_path)){
   data_fitting <- readRDS(data_fitting_rds_path)
 }
 
-df_all_values <- list.files(dir_model_data, "df_all_values_M4_\\d{4}.rds$", full.names = TRUE) %>% naturalsort::naturalsort() %>% lapply(readRDS) %>% bind_rows()
-
-## testing
-print(paste0("DSR 0.4: ", df_all_values$change_DSR[df_all_values$scenario == "TH_SP_ID_DSR_9_1_28_0.4"]))
-print(paste0("DSR 0.6: ", df_all_values$change_DSR[df_all_values$scenario == "TH_SP_ID_DSR_9_1_28_0.6"]))
-print(paste0("DSR 0.8: ", df_all_values$change_DSR[df_all_values$scenario == "TH_SP_ID_DSR_9_1_28_0.8"]))
-print(paste0("DSR 1: ", df_all_values$change_DSR[df_all_values$scenario == "TH_SP_ID_DSR_9_1_28_1"]))
-
-print(paste0("IDR 0.4: ", df_all_values$change_IDR[df_all_values$scenario == "TH_SP_ID_IDR_9_1_28_0.4"]))
-print(paste0("IDR 0.6: ", df_all_values$change_IDR[df_all_values$scenario == "TH_SP_ID_IDR_9_1_28_0.6"]))
-print(paste0("IDR 0.8: ", df_all_values$change_IDR[df_all_values$scenario == "TH_SP_ID_IDR_9_1_28_0.8"]))
-print(paste0("IDR 1: ", df_all_values$change_IDR[df_all_values$scenario == "TH_SP_ID_IDR_9_1_28_1"]))
+df_all_values <- list.files(dir_model_data, "df_all_values_M4_1\\d{3}.rds$", full.names = TRUE) %>% naturalsort::naturalsort() %>% lapply(readRDS) %>% bind_rows()
 
 ## load Fig 4abcd
 list_p_fig_4abcd <- readRDS(paste0(dir_rst, "list_p_fig_4abcd.rds"))
 
-source("scripts/model_simulation/helper/plot_fig_4efg.R")
-## Plotting Fig. 4e and 4f
-list_fig_4efg <- plot_fig_4efg(
+source("scripts/model_simulation/helper/plot_fig_5abc.R")
+## Plotting Fig. 5a and 5bc
+list_fig_5abc <- plot_fig_5abc(
   dir_rst = dir_rst,
   dir_model_data = dir_model_data,
   df_all_values = df_all_values,
   data_fitting = data_fitting,
-  bootstrap_each_param=1024*50,
+  bootstrap_each_param=1024*10,
   n_cores = n_cores
 )
 
-## combine all fig 4 sub plots
-p_fig_4 <- list_p_fig_4abcd$p_fig_4abcd / list_fig_4efg$p_fig_4efg
-ggsave(paste0(dir_rst, "fig_4.jpg"), p_fig_4, width = 16, height = 20, dpi = 300)
-ggsave(paste0(dir_rst, "fig_4.pdf"), p_fig_4, width = 16, height = 20)
+## prepare the data for the next step - round 3 simulations
+### round three testing changes in viral transmissibility and population immunity
+
+list_fig_5abc <- readRDS(paste0(dir_rst, "list_p_fig_5abc.rds"))
+best_param_set <- list_p_fig_4abcd$df_EDT_fig_4bcd_percentile %>%
+  filter((parval_2=="P2-H" & parval_1=="0.1%") | (parval_2=="T2-R" & parval_1=="70%")) %>% 
+  mutate(parval_1 = as.numeric(gsub("%","",as.character(parval_1)))/100) 
+
+write_csv(best_param_set, paste0(dir_rst, "best_param_set.csv"))
+
+source("scripts/model_simulation/helper/prepare_simulation_fig_5d.R")
+
+df_all_values_new <- prepare_simulation_fig_5d(
+  best_param_set = best_param_set,
+  base_model_name = base_model_name,
+  values_id_unit_intro = seq(0, 28, 1),
+  values_change_Reff = c(1.5, 3, 5),
+  values_change_Immunity_setting = c("Few", "Moderate", "More"),
+  change_IDR = list_fig_5abc$change_IDR_min_better,
+  change_DSR = list_fig_5abc$change_DSR_min_better,
+  values_Scenarios = c("fewer_diagnostics", "fewer_sequencing", "half_resources"),
+  data_fitting = data_fitting,
+  check_redo = TRUE
+)

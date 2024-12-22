@@ -2,7 +2,7 @@
 required_packages <- c(
   "doParallel", "countrycode", "here", "lubridate", "readxl", "writexl",
   "geosphere", "doFuture", "iterators", "maps", "rnaturalearth", "rnaturalearthdata",
-  "sf", "WDI", "gravity", "ggrepel", "ggpubr", "slider", "MetBrewer", "cartogram", "ggforce", "packcircles", "writexl", "shadowtext", "geofacet", "RColorBrewer", "english", "naturalsort", "scales", 
+  "sf", "WDI", "gravity", "ggrepel", "ggpubr", "slider", "MetBrewer", "cartogram", "ggforce", "packcircles", "writexl", "shadowtext", "geofacet", "RColorBrewer", "english", "naturalsort", "scales", "ggpmisc",
   "ggbump", "pacman", "pomp", "spatPomp"
 )
 

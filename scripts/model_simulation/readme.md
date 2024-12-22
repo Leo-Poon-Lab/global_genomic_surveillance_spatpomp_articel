@@ -17,3 +17,5 @@
 4. Run `Rscript scripts/model_simulation/Simulate_M4_3.R` to update the plot and generate data for the second simulation round.
 5. Run `scripts/model_simulation/Simulate_M4_3_HPC_command.sh` **on HPC** to simulate $M_4$ for the second round.
 6. Run `Rscript scripts/model_simulation/Simulate_M4_4.R` to update the plot.
+7. Run `scripts/model_simulation/Simulate_M4_4_HPC_command.sh` **on HPC** to simulate $M_4$ for the third round (for fig 5).
+8. Run `Rscript scripts/model_simulation/Simulate_M4_5.R` to update the plot.

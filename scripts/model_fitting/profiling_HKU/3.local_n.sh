@@ -200,7 +200,7 @@ for i in $(seq 1 ${N_nodes}); do
   echo "module load libx11-1.7.0-gcc-10.2.0-4iqvpeu" >> $job_script
   echo "module load libjpeg-turbo/2.0.6" >> $job_script
   echo "" >> $job_script
-  echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
+  #echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
   echo "echo "Starting ${PARAM_TYPE} local search for ${INPUT_SEARCH} ${ROUND_N}_${i}."" >> $job_script
   echo "date" >> $job_script
   

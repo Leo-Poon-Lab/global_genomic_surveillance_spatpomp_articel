@@ -1,14 +1,17 @@
 C_k_c_infected_u = C_1_c_infected_new[u] + C_2_c_infected_new[u] + C_3_c_infected_new[u] + C_4_c_infected_new[u];
 C_k_i_infected_u = code_sum_C_k_i_infected_TO_BE_REPLACED;
 
-// whether ther is a specified sequencing propensity
-if(sequencing_propensity[u]<=1.0){
-  is_sequencing_propensity_u = 1;
+// whether ther is a specified traveler weight
+if(traveler_weight[u]<=1.0){
+  is_traveler_weight_u = 1;
 } else {
-  is_sequencing_propensity_u = 0;
+  is_traveler_weight_u = 0;
 }
 
 infection_detection_new_u = infection_detection[u]*change_IDR[u];
+if((C_k_c_infected_u+C_k_i_infected_u)*infection_detection_new_u > diagnostic_capacity[u]*change_IDR[u]){ // if the number of diagnostic cases is larger than the diagnostic capacity, then the number total diagnostic cases will be capped by the diagnostic capacity.
+  infection_detection_new_u = diagnostic_capacity[u]*change_IDR[u]/C_k_i_infected_u;
+}
 if(infection_detection_new_u>1){
   // community detection
   C_1_c_detected_new[u] = C_1_c_infected_new[u];
@@ -30,13 +33,13 @@ if(infection_detection_new_u>1){
   code_C_k_i_detected_origin_o_new_IDRlower1_TO_BE_REPLACED;
   C_k_i_detected_u = code_sum_C_k_i_detected_TO_BE_REPLACED;
 
-  if(is_sequencing_propensity_u==1){
-    // sequencing propensity means the proportion of detection/sequencing capacity is left for the imported cases.
+  if(is_traveler_weight_u==1){
+    // traveler weight means the proportion of detection/sequencing capacity is left for the imported cases.
     // 1. calculate the total number of detected cases
     C_k_all_detected_u = C_k_c_detected_u + C_k_i_detected_u;
     // 2. calculate the proportion of detected cases that left for the imported
-    num_C_k_i_propensity_u = C_k_all_detected_u * sequencing_propensity[u];
-    num_C_k_c_propensity_u = C_k_all_detected_u * (1-sequencing_propensity[u]);
+    num_C_k_i_propensity_u = C_k_all_detected_u * traveler_weight[u];
+    num_C_k_c_propensity_u = C_k_all_detected_u * (1-traveler_weight[u]);
     // update the C_k_c_detected_new and C_k_i_detected_origin_o_new
     if(C_k_i_infected_u==0){
       new_IDR_i_u = 0;
@@ -72,6 +75,10 @@ if(infection_detection_new_u>1){
 }
 
 detection_sequencing_new_u = ((C_k_i_infected_u + C_k_c_infected_u) * infection_detection[u] * detection_sequencing[u])/(C_k_i_detected_u + C_k_c_detected_u)*change_DSR[u]; // Note that '(C_k_i_infected_u + C_k_c_infected_u) * infection_detection[u] * detection_sequencing[u]' is the original sequenced number, '(C_k_i_detected_u + C_k_c_detected_u)' is the updated detection number. The detection sequencing ratio is therefore not dependent on the changes of infection detection ratio.
+if((C_k_i_detected_u + C_k_c_detected_u)*detection_sequencing_new_u > sequencing_capacity[u]*change_DSR[u]){ // if the number of sequenced cases is larger than the sequencing capacity, then the number total sequenced cases will be capped by the sequencing capacity.
+  detection_sequencing_new_u = sequencing_capacity[u]*change_DSR[u]/(C_k_i_detected_u + C_k_c_detected_u);
+}
+
 if(detection_sequencing_new_u>1){
   // community sequencing, will be fitted, N=4
   C_1_c_sequenced_new[u] = C_1_c_detected_new[u];
@@ -93,13 +100,13 @@ if(detection_sequencing_new_u>1){
   code_C_k_i_sequenced_origin_o_new_DSRlower1_TO_BE_REPLACED;
   C_k_i_sequenced_u = code_sum_C_k_i_sequenced_TO_BE_REPLACED;
 
-  if(is_sequencing_propensity_u==1){
-    // sequencing propensity means the proportion of detection/sequencing capacity is left for the imported cases.
+  if(is_traveler_weight_u==1){
+    // traveler weight means the proportion of detection/sequencing capacity is left for the imported cases.
     // 1. calculate the total number of sequenced cases
     C_k_all_sequenced_u = C_k_c_sequenced_u + C_k_i_sequenced_u;
     // 2. calculate the proportion of sequenced cases that left for the imported
-    num_C_k_i_propensity_u = C_k_all_sequenced_u * sequencing_propensity[u];
-    num_C_k_c_propensity_u = C_k_all_sequenced_u * (1-sequencing_propensity[u]);
+    num_C_k_i_propensity_u = C_k_all_sequenced_u * traveler_weight[u];
+    num_C_k_c_propensity_u = C_k_all_sequenced_u * (1-traveler_weight[u]);
     // update the C_k_c_sequenced_new and C_k_i_sequenced_origin_o_new
     if(C_k_i_detected_u==0){
       new_DSR_i_u = 0;

@@ -67,12 +67,11 @@ names(colors_spatial_units) <- data_fitting$country_under_investigation
 
 # 5 continents: Africa, Asia, Europe, North America, Oceania
 library(MetBrewer)
-colors_continent <- met.brewer("Wissing")
-names(colors_continent) <- c("Africa", "Asia", "Europe", "North America", "Oceania")
+colors_continent <- met.brewer("Wissing", 6)
+names(colors_continent) <- c("Africa", "Asia", "Europe", "North America", "South America", "Oceania")
 
-# Fig4e
-colors_fig4e <- c("#608c83", "#1f5059", "#513c59", "#160a30")
-names(colors_fig4e) <- c("Change IDR (Community)", "Change IDR (Imported)", "Change DSR (Community)", "Change DSR (Imported)")
+# Fig5abc
+colors_fig5abc <- c("#8a3324", "#997a8d", "#b29882", "#666e57")
 
 # IDR, DSR and Travel Level
 colors_IDR_DSR_TraLevel <- c("#8b7764", "#65927a", "#f99b95")

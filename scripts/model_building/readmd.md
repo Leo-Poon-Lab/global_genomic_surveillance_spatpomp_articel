@@ -1,1 +1,0 @@
-The script [`spatPomp_Omicron20.R`](model_building/spatPomp_Omicron20.R) contains a function used for building model $M_0$. Similarly, [`spatPomp_M1.R`](model_building/spatPomp_M1.R), [`spatPomp_M3.R`](model_building/spatPomp_M3.R), [`spatPomp_M4.R`](model_building/spatPomp_M4.R) contain functions for building models $M_1$, $M_3$, and $M_4$, respectively. 

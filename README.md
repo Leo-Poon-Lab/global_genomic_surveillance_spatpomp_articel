@@ -1,6 +1,6 @@
 ## Optimizing Global Genomic Surveillance for Early Detection of Emerging SARS-CoV-2 Variants
 
-<!-- *Haogao Gu#, Jifan Li#, Wanying Sun, Mengting Li, Tommy T.Y. Lam, Kathy Leung, Joseph T. Wu, Hsiang-Yu Yuan, Matthew R. McKay, Ning Ning, Leo L.M. Poon\** -->
+<!-- *Haogao Gu#, Jifan Li#, Wanying Sun, Mengting Li, Kathy Leung, Joseph T. Wu, Hsiang-Yu Yuan, Matthew R. McKay, Ning Ning, Leo L.M. Poon\** -->
 
 ### Project Overview:
 

@@ -205,7 +205,7 @@ for i in $seq_i; do
   echo "module load libx11-1.7.0-gcc-10.2.0-4iqvpeu" >> $job_script
   echo "module load libjpeg-turbo/2.0.6" >> $job_script
   echo "" >> $job_script
-  echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
+  #echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
   echo "date" >> $job_script
   echo "TASK_ID=$i Rscript scripts/model_fitting/profiling_HKU/helper/profile_params_n.R ${INPUT_MLE} ${PARAM_TYPE} ${ROUND_N} ${NCORES} ${SEARCH_LEVEL} ${ESTIMATOR} ${MODEL_NAME}" >> $job_script  
   echo "date" >> $job_script

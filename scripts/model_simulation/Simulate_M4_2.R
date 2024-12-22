@@ -2,10 +2,10 @@
 
 ## Run on HPC
 setwd(here::here())
-path_mle <- "results/model_data/profiling_HKU/Omicron20/profiling_unit_11/mlev2_high_mod.rds"
+path_mle <- "results/model_data/profiling_HKU/Omicron20/profiling_shared_11/mlev1_high.rds"
 params_mle <- readRDS(path_mle)
 
-simulation_replicates <- 512
+simulation_replicates <- 256
 check_redo_model <- FALSE
 check_redo_simulation <- FALSE
 args = commandArgs(trailingOnly=TRUE)
@@ -15,13 +15,13 @@ if (length(args)!=2) {
 } else {
   input_rds <- args[1] # for df_all_values_M4_i.rds
   stopifnot(file.exists(input_rds))
-  
+
   n_cores <- as.numeric(args[2])
   stopifnot(!is.na(n_cores))
   stopifnot(n_cores > 0)
 }
-# input_rds <- "results/model_data/model_simulation/M4//df_all_values_M4_12.rds"
-# n_cores <- 32
+# input_rds <- "results/model_data/model_simulation/M4//df_all_values_M4_35.rds"
+# n_cores <- 64
 
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(doParallel))
@@ -61,15 +61,31 @@ print(date())
 registerDoParallel(n_cores)
 
 foreach(i = 1:nrow(df_all_values)) %dopar% {
+  # i=238
   change_IDR_i <- unlist(df_all_values$change_IDR[i])
   change_DSR_i <- unlist(df_all_values$change_DSR[i])
-  sequencing_propensity_i <- unlist(df_all_values$sequencing_propensity[i])
+  traveler_weight_i <- unlist(df_all_values$traveler_weight[i])
   id_unit_intro_i <- unlist(df_all_values$id_unit_intro[i])
   model_name_i <- paste0("M4_", df_all_values$scenario[i])
+
+  if("change_Immunity_setting" %in% colnames(df_all_values)){
+    if(df_all_values$change_Immunity_setting[i] == "Few"){
+      lambda_two_i <- 0 # correspond to 0.32 of the immuned population are susceptible
+    } else if(df_all_values$change_Immunity_setting[i] == "Moderate"){
+      lambda_two_i <- 0.5 # correspond to 0.595 of the immuned population are susceptible
+    } else if(df_all_values$change_Immunity_setting[i] == "More"){
+      lambda_two_i <- 1 # correspond to 0.87 of the immuned population are susceptible
+    } else{
+      stop("Unknown change_Immunity_setting")
+    }
+  } else {
+    lambda_two_i <- NA
+  }
 
   model_out_file_i <- paste0(dir_model_data, "Spatpomp_", model_name_i, ".rds")
   if(check_redo_model){
     check_redo_i <- TRUE
+    file.remove(model_out_file_i)
   } else{
     if(file.exists(model_out_file_i)){
       check_redo_i <- FALSE
@@ -95,13 +111,26 @@ foreach(i = 1:nrow(df_all_values)) %dopar% {
         for_IBPF = FALSE,
         change_IDR = change_IDR_i, # can be a vector of length U, a single value, or NA
         change_DSR = change_DSR_i, # can be a vector of length U, a single value, or NA
-        sequencing_propensity = sequencing_propensity_i, # can be a vector of length U, a single value, or NA
+        traveler_weight = traveler_weight_i, # can be a vector of length U, a single value, or NA
         id_unit_intro = id_unit_intro_i
       )
     ))
 
     ## plug in MLE here
-    model_M4 <- put_params_into_model(model_M4, params_mle)
+    ## change the params if needed
+    source("scripts/model_fitting/helper/tranform_log_params.R")
+    params_mle_mod <- params_mle
+    if("change_Reff" %in% colnames(df_all_values)){
+      Reff_i <- unlist(df_all_values$change_Reff[i])
+      eta_two_i <- (Reff_i - b_values["eta_two"])/k_values["eta_two"]
+      params_mle_mod["eta_two"] <- eta_two_i
+    }
+
+    if(!is.na(lambda_two_i)){
+      params_mle_mod["lambda_two"] <- lambda_two_i
+    }
+
+    model_M4 <- put_params_into_model(model_M4, params_mle_mod)
 
     saveRDS(model_M4, model_out_file_i)
     rm(model_M4)
@@ -118,7 +147,7 @@ set.seed(NULL)
 for(i in sample(1:nrow(df_all_values))){
   change_IDR_i <- unlist(df_all_values$change_IDR[i])
   change_DSR_i <- unlist(df_all_values$change_DSR[i])
-  sequencing_propensity_i <- unlist(df_all_values$sequencing_propensity[i])
+  traveler_weight_i <- unlist(df_all_values$traveler_weight[i])
   id_unit_intro_i <- unlist(df_all_values$id_unit_intro[i])
   model_name_i <- paste0("M4_", df_all_values$scenario[i])
 
@@ -127,6 +156,7 @@ for(i in sample(1:nrow(df_all_values))){
 
   if(check_redo_simulation){
     check_redo_i <- TRUE
+    file.remove(df_sims_out_file_i)
   } else{
     if(file.exists(df_sims_out_file_i)){
       check_redo_i <- FALSE
@@ -154,3 +184,7 @@ for(i in sample(1:nrow(df_all_values))){
 
 print(date())
 print("Finished simulating the models in parallel")
+
+unlink(tempdir(), recursive = TRUE)
+#system("rm -rf /scr/u/guhaogao/Rtmp*")
+

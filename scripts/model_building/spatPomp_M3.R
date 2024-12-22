@@ -1,4 +1,4 @@
-# This code builds the model M3: M0 with an adjustable sequencing propensity.
+# This code builds the model M3: M0 with an adjustable traveler weight.
 ## The code is largely the same as M0, but differs in the rprocess_head and rprocess_tail parts.
 
 library(spatPomp)
@@ -15,7 +15,7 @@ build_spatPomp_M3 <- function(
   for_IBPF = FALSE,
   change_IDR = NA, # can be a vector of length U, a single value, or NA
   change_DSR = NA, # can be a vector of length U, a single value, or NA
-  sequencing_propensity = NA # can be a vector of length U, a single value, or NA
+  traveler_weight = NA # can be a vector of length U, a single value, or NA
 ){
   stopifnot(!is.na(global_data))
 
@@ -46,11 +46,11 @@ build_spatPomp_M3 <- function(
     }
     stopifnot(all(change_DSR>=0))
   }
-  if(length(sequencing_propensity)==U){
-    if(all(is.na(sequencing_propensity))){
-      sequencing_propensity <- 1
+  if(length(traveler_weight)==U){
+    if(all(is.na(traveler_weight))){
+      traveler_weight <- 999
     }
-    stopifnot(all(sequencing_propensity>=0 & sequencing_propensity<=1))
+    stopifnot(all(traveler_weight>=0))
   }
 
   if(length(change_IDR)!=U){
@@ -63,9 +63,9 @@ build_spatPomp_M3 <- function(
       stopifnot(is.na(change_DSR))
     }
   }
-  if(length(sequencing_propensity)!=U){
-    if(length(sequencing_propensity)!=1){
-      stopifnot(is.na(sequencing_propensity))
+  if(length(traveler_weight)!=U){
+    if(length(traveler_weight)!=1){
+      stopifnot(is.na(traveler_weight))
     }
   }
 
@@ -200,6 +200,13 @@ build_spatPomp_M3 <- function(
     data_covariates$detection_sequencing[is.infinite(data_covariates$detection_sequencing)]<- 0
   }
 
+  ## Add diagnostic and sequencing capacity, using the 95th percentile of the daily numbers of diagnostic and sequencing cases
+  df_ds_cap <- data_measurements %>% group_by(date_decimal, code) %>% summarise(diagnostic_capacity=daily_cases, sequencing_capacity=sum(c_across(C_1_c:C_4_i_o_28_),na.rm = T)) %>% ungroup() %>% group_by(code) %>% summarise(diagnostic_capacity=round(quantile(diagnostic_capacity, 0.95, na.rm = T)), sequencing_capacity=round(quantile(sequencing_capacity, 0.95, na.rm = T)))
+
+  data_covariates <- left_join(data_covariates, df_ds_cap, "code")
+
+  writexl::write_xlsx(df_ds_cap, "results/figs/model_simulation/M3/diagnostic_and_sequencing_capacities_daily.xlsx")
+  
   ## Add M3 specific covariates
   if(all(!is.na(change_IDR))){
     data_covariates <- left_join(data_covariates, tibble(code=units_all, change_IDR=change_IDR), "code")
@@ -213,12 +220,16 @@ build_spatPomp_M3 <- function(
     warning("change_DSR is not complete, set to 1")
     data_covariates$change_DSR <- 1
   }
-  if(all(!is.na(sequencing_propensity))){
-    data_covariates <- left_join(data_covariates, tibble(code=units_all, sequencing_propensity=sequencing_propensity), "code")
+  if(all(!is.na(traveler_weight))){
+    data_covariates <- left_join(data_covariates, tibble(code=units_all, traveler_weight=traveler_weight), "code")
   } else{
-    warning("sequencing_propensity is not complete, set to 1")
-    data_covariates$sequencing_propensity <- 999 # magic number meaning that the sequencing propensity is not used
+    warning("traveler_weight is not complete, set to 999")
+    data_covariates$traveler_weight <- 999 # magic number meaning that the traveler weight is not used
   }
+
+  ## After adding change_IDR, change_DSR, need to change the diagnostic and sequencing capacity accordingly
+  data_covariates$diagnostic_capacity <- data_covariates$diagnostic_capacity*data_covariates$change_IDR
+  data_covariates$sequencing_capacity <- data_covariates$sequencing_capacity*data_covariates$change_DSR
 
   # 3.3.2 Constructing model components (latent state initializer, latent state transition simulator and measurement model).
   ## List all state-names in pomp object:
@@ -290,7 +301,7 @@ build_spatPomp_M3 <- function(
 
   model_rprocess <- spatPomp_Csnippet(
     unit_statenames = unit_state_names,
-    unit_covarnames = c('population', 'vaxx_rate', 'travel_control_level', 'infection_fatality', 'infection_detection', "detection_sequencing", "change_IDR", "change_DSR", "sequencing_propensity"),
+    unit_covarnames = c('population', 'vaxx_rate', 'travel_control_level', 'infection_fatality', 'infection_detection', "detection_sequencing", "change_IDR", "change_DSR", "traveler_weight", "diagnostic_capacity", "sequencing_capacity"),
     unit_paramnames = c(params_RP_shared[!grepl("theta_", params_RP_shared)], params_RP_diff), # all params except those in the measurement process 
     code=code_rprocess
   )

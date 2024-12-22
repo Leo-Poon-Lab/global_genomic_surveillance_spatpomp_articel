@@ -62,6 +62,14 @@ else
   # seq_i=$(seq 10 11)
 fi
 
+if [ "${MODEL}" == "M3" ]; then
+  TIME="6:00:00"
+elif [ "${MODEL}" == "M4" ]; then
+  TIME="12:00:00"
+else
+  TIME="12:00:00"
+fi
+
 for i in ${seq_i}; do
   job_script="job_$i.sh"
   echo "#!/bin/bash" > $job_script
@@ -70,7 +78,7 @@ for i in ${seq_i}; do
   echo "#SBATCH --job-name=Simulate_${MODEL}_${i}" >> $job_script
   echo "#SBATCH --partition=${PARTITION}" >> $job_script
   echo "#SBATCH --qos=normal" >> $job_script
-  echo "#SBATCH --time=24:00:00" >> $job_script
+  echo "#SBATCH --time=${TIME}" >> $job_script
   echo "#SBATCH --nodes=1" >> $job_script
   echo "#SBATCH --ntasks=1" >> $job_script
   echo "#SBATCH --cpus-per-task=${NCORES}" >> $job_script
@@ -91,7 +99,7 @@ for i in ${seq_i}; do
   echo "module load libx11-1.7.0-gcc-10.2.0-4iqvpeu" >> $job_script
   echo "module load libjpeg-turbo/2.0.6" >> $job_script
   echo "" >> $job_script
-  echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
+  #echo "cd /scr/u/guhaogao/global_genomic_surveillance_spatpomp" >> $job_script
   echo "echo "Starting simulating ${MODEL} for the ${i} job."" >> $job_script
   echo "date" >> $job_script
   echo "Rscript scripts/model_simulation/Simulate_${MODEL}_2.R "results/model_data/model_simulation/${MODEL}/df_all_values_${MODEL}_${i}.rds" ${NCORES}" >> $job_script
